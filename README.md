@@ -25,7 +25,7 @@ A responsive, single-page template for displaying Google performance metrics. Bu
 ##  Demo
 
 You can see a live demo of this template here:
-**[Link to your GitHub Pages demo will go here - see Step 5]**
+**( Coming Soon, When I Get Around To It. )**
 
 ## 📜 License
 
