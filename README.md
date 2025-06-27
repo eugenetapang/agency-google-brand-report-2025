@@ -1,7 +1,5 @@
 # Mobile-First Agency Performance Report
 
-![GitHub Pages](https://img.shields.io/github/deployments/YOUR_USERNAME/YOUR_REPOSITORY/production?label=demo&style=for-the-badge)
-![License](https://img.shields.io/github/license/YOUR_USERNAME/YOUR_REPOSITORY?style=for-the-badge)
 
 A comprehensive, mobile-first, single-file HTML template designed for digital marketing agencies to present a polished and interactive performance report to their clients.
 
@@ -121,4 +119,5 @@ All content in this template is controlled by JavaScript objects located inside 
 This project is licensed under the **MIT License**. See the `LICENSE` file for more details. You are free to use, modify, and distribute this template for personal and commercial purposes.
 
 6. Screenshots for Your Reference
+
 <a href="https://ibb.co/dsfPsycj"><img src="https://i.ibb.co/dsfPsycj/2025-google-brand-report-1.jpg" alt="2025-google-brand-report-1" border="0"></a> <a href="https://ibb.co/Mkcm2XPh"><img src="https://i.ibb.co/Mkcm2XPh/2025-google-brand-report-2.jpg" alt="2025-google-brand-report-2" border="0"></a> <a href="https://ibb.co/C3JhDhpy"><img src="https://i.ibb.co/C3JhDhpy/2025-google-brand-report-3.jpg" alt="2025-google-brand-report-3" border="0"></a> <a href="https://ibb.co/gLjb7Nhb"><img src="https://i.ibb.co/gLjb7Nhb/2025-google-brand-report-4.jpg" alt="2025-google-brand-report-4" border="0"></a> <a href="https://ibb.co/W4hpr5BM"><img src="https://i.ibb.co/W4hpr5BM/2025-google-brand-report-5.jpg" alt="2025-google-brand-report-5" border="0"></a> <a href="https://ibb.co/svJSvcKY"><img src="https://i.ibb.co/svJSvcKY/2025-google-brand-report-6.jpg" alt="2025-google-brand-report-6" border="0"></a>
