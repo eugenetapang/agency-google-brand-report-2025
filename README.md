@@ -4,8 +4,10 @@
 
 A responsive, single-page template for displaying Google performance metrics. Built with Tailwind CSS and Chart.js, it's designed to be easily modified and self-contained in a single HTML file.
 
-![Screenshot of the report on desktop and mobile](<a href="https://ibb.co/dsfPsycj"><img src="https://i.ibb.co/dsfPsycj/2025-google-brand-report-1.jpg" alt="2025-google-brand-report-1" border="0"></a> <a href="https://ibb.co/Mkcm2XPh"><img src="https://i.ibb.co/Mkcm2XPh/2025-google-brand-report-2.jpg" alt="2025-google-brand-report-2" border="0"></a> <a href="https://ibb.co/C3JhDhpy"><img src="https://i.ibb.co/C3JhDhpy/2025-google-brand-report-3.jpg" alt="2025-google-brand-report-3" border="0"></a> <a href="https://ibb.co/gLjb7Nhb"><img src="https://i.ibb.co/gLjb7Nhb/2025-google-brand-report-4.jpg" alt="2025-google-brand-report-4" border="0"></a> <a href="https://ibb.co/W4hpr5BM"><img src="https://i.ibb.co/W4hpr5BM/2025-google-brand-report-5.jpg" alt="2025-google-brand-report-5" border="0"></a> <a href="https://ibb.co/svJSvcKY"><img src="https://i.ibb.co/svJSvcKY/2025-google-brand-report-6.jpg" alt="2025-google-brand-report-6" border="0"></a>)
+![Screenshot of the report on desktop and mobile]()
 *(You can take a screenshot of your report and upload it to the repository to replace this placeholder)*
+
+<a href="https://ibb.co/dsfPsycj"><img src="https://i.ibb.co/dsfPsycj/2025-google-brand-report-1.jpg" alt="2025-google-brand-report-1" border="0"></a> <a href="https://ibb.co/Mkcm2XPh"><img src="https://i.ibb.co/Mkcm2XPh/2025-google-brand-report-2.jpg" alt="2025-google-brand-report-2" border="0"></a> <a href="https://ibb.co/C3JhDhpy"><img src="https://i.ibb.co/C3JhDhpy/2025-google-brand-report-3.jpg" alt="2025-google-brand-report-3" border="0"></a> <a href="https://ibb.co/gLjb7Nhb"><img src="https://i.ibb.co/gLjb7Nhb/2025-google-brand-report-4.jpg" alt="2025-google-brand-report-4" border="0"></a> <a href="https://ibb.co/W4hpr5BM"><img src="https://i.ibb.co/W4hpr5BM/2025-google-brand-report-5.jpg" alt="2025-google-brand-report-5" border="0"></a> <a href="https://ibb.co/svJSvcKY"><img src="https://i.ibb.co/svJSvcKY/2025-google-brand-report-6.jpg" alt="2025-google-brand-report-6" border="0"></a>
 
 ## ✨ Features
 
