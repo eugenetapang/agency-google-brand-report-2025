@@ -1,4 +1,4 @@
-# agency-google-brand-report-2025
+# One Man Agency - Google Brand Performance Report for Your Clients in 2025
 2025 Version of a Google Brand Performance Report for Agencies (Open Source) Great for One Man Teams
 # Mobile-First Performance Report Template
 
