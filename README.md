@@ -20,8 +20,6 @@ It's designed to be:
 
 **( Coming Soon, Super Busy at the Moment )**
 
-*(Replace the URL above after setting up GitHub Pages)*
-
 ---
 
 ## ✨ Key Features
