@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Performance Report</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for animations or specific overrides */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+        }
+        /* Ensure charts take up available space within their containers */
+        canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .completed-task {
+            text-decoration: line-through;
+            color: #6B7280; /* Gray-500 */
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content-wrapper {
+            background-color: white;
+            padding: 1rem; /* Reduced padding for mobile */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+             .modal-content-wrapper {
+                padding: 1.5rem;
+             }
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4B5563; /* Gray-600 */
+            line-height: 1;
+        }
+        .modal-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        /* Custom link styling */
+        .evidence-link {
+            color: #2563EB; /* blue-700 */
+            text-decoration: underline;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        .evidence-link:hover {
+            color: #1D4ED8; /* blue-800 */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 font-sans text-gray-800 flex items-center justify-center p-2 sm:p-4">
+
+    <div class="w-full max-w-6xl bg-white rounded-lg shadow-xl p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-2">Google Performance Report</h1>
+            <p class="text-lg sm:text-xl text-gray-600" id="reportDate"></p>
+        </header>
+
+        <section class="mb-10">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Agency Brand Score: 78%</h2>
+            <div class="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md">
+                <div class="h-64 sm:h-72 w-full flex justify-center items-center">
+                    <canvas id="metaScoreChartCanvas" class="w-full h-full"></canvas>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">Meta Score Legend</h3>
+                    <ul class="space-y-3 text-base sm:text-lg text-gray-600" id="metaScoreLegend">
+                        <li class="flex items-start sm:items-center">
+                            <span class="inline-block w-4 h-4 rounded-full bg-purple-600 mr-3 flex-shrink-0 mt-1 sm:mt-0"></span>
+                            <div><strong>GBP Score:</strong> Overall performance in Google Business Profile (Reviews, Engagement, Local SEO).</div>
+                        </li>
+                        <li class="flex items-start sm:items-center">
+                            <span class="inline-block w-4 h-4 rounded-full bg-green-600 mr-3 flex-shrink-0 mt-1 sm:mt-0"></span>
+                            <div><strong>Organic Score:</strong> Visibility and performance in organic search results (Keywords, Traffic, Technical SEO).</div>
+                        </li>
+                        <li class="flex items-start sm:items-center">
+                            <span class="inline-block w-4 h-4 rounded-full bg-blue-600 mr-3 flex-shrink-0 mt-1 sm:mt-0"></span>
+                            <div><strong>AI Voice Score:</strong> Readiness and performance in AI-powered voice search and generative AI.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PURELY MOBILE NAVIGATION: Stacks vertically on mobile, horizontal on desktop -->
+        <nav class="flex flex-col md:flex-row md:justify-center mb-8 bg-gray-200 rounded-lg p-2 shadow-inner space-y-2 md:space-y-0 md:space-x-2">
+            <button id="tab-dashboard" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 bg-blue-600 text-white shadow-lg" data-tab="dashboard">Performance Scores</button>
+            <button id="tab-plan" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 text-gray-700 hover:bg-gray-300" data-tab="plan">Action Plan</button>
+            <button id="tab-analysis" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 text-gray-700 hover:bg-gray-300" data-tab="analysis">Detailed Analysis</button>
+            <button id="tab-supporting-documents" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 text-gray-700 hover:bg-gray-300" data-tab="supporting-documents">Supporting Data</button>
+            <button id="tab-profile-information" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 text-gray-700 hover:bg-gray-300" data-tab="profile-information">Profile Information</button>
+            <button id="tab-reports" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-300 text-gray-700 hover:bg-gray-300" data-tab="reports">Reports History</button>
+        </nav>
+
+        <div id="tab-content">
+            <!-- Dashboard Tab Content -->
+            <section id="dashboard-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Performance Scores</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-2">GBP Score</h3><p class="text-4xl font-bold text-purple-600">75%</p><p class="text-gray-500">Strong local presence, good review management.</p></div>
+                    <div class="p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-2">Organic Score</h3><p class="text-4xl font-bold text-green-600">80%</p><p class="text-gray-500">High search visibility, relevant content.</p></div>
+                    <div class="p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-2">AI Voice Score</h3><p class="text-4xl font-bold text-blue-600">70%</p><p class="text-gray-500">Good for general queries, room for specific optimizations.</p></div>
+                </div>
+                <div class="mt-8"><h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">Key Insights</h3><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2"><li>Overall brand score indicates a healthy digital presence.</li><li>GBP performance is robust, benefiting from active engagement.</li><li>Organic search continues to be a strong channel for traffic acquisition.</li><li>AI Voice search performance is promising but can be enhanced with more structured data.</li></ul></div>
+            </section>
+
+            <!-- Action Plan Tab Content -->
+            <section id="plan-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md hidden">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Recommended Action Plan</h2>
+
+                <!-- PURELY MOBILE SUB-NAV: Dropdown Menu -->
+                <div class="mb-8">
+                    <label for="plan-select" class="sr-only">Select Action Plan Category</label>
+                    <select id="plan-select" class="w-full p-3 bg-gray-200 border border-gray-300 rounded-lg shadow-inner text-lg font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="gbp" selected>GBP Score Actions</option>
+                        <option value="organic">Organic Score Actions</option>
+                        <option value="ai">AI Voice Score Actions</option>
+                    </select>
+                </div>
+
+                <div id="actionPlanContainer">
+                    <!-- Action Plan categories and tasks will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- Detailed Analysis Tab Content -->
+            <section id="analysis-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md hidden">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Detailed Analysis</h2>
+                
+                <!-- PURELY MOBILE SUB-NAV: Dropdown Menu -->
+                <div class="mb-8">
+                    <label for="analysis-select" class="sr-only">Select Analysis Section</label>
+                    <select id="analysis-select" class="w-full p-3 bg-gray-200 border border-gray-300 rounded-lg shadow-inner text-lg font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="local" selected>GBP Performance</option>
+                        <option value="organic">Organic Search</option>
+                        <option value="crawl-indexing">Crawl & Indexing</option>
+                        <option value="ai-gemini">AI & Gemini Q&A</option>
+                    </select>
+                </div>
+
+                <div id="sub-tab-content">
+                    <!-- GBP Performance Sub-tab Content -->
+                    <div id="local-content" class="sub-tab-content bg-white rounded-lg p-4 sm:p-6 shadow-sm animate-fade-in"><h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 text-center">GBP Performance: Deep Dive</h3><div class="h-64 sm:h-72 w-full flex justify-center items-center"><canvas id="gbpComparisonChartCanvas" class="w-full h-full"></canvas></div><div class="mt-8"><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Key GBP Metrics & Insights</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4" id="gbpMetricsList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Engagement & Interaction</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4"><li><strong>Calls from GBP:</strong> <span id="gbpCalls"></span></li><li><strong>Website Visits from GBP:</strong> <span id="gbpWebsiteVisits"></span></li><li><strong>Direction Requests from GBP:</strong> <span id="gbpDirectionRequests"></span></li></ul><p class="text-gray-600 text-base">Your Google Business Profile shows strong performance, particularly in customer satisfaction and engagement. Focus on leveraging GBP posts for promotions and updates to further drive direct engagement and local SEO. Consider proactive Q&A on your profile to address common customer queries.</p><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Comparison to Industry Benchmarks</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2"><li>Average Star Rating: <span id="gbpAvgRating"></span> vs. Industry Average <span id="gbpCompetitorAvgRating"></span> (Excellent)</li><li>Review Response Rate: <span id="gbpReviewResponseRate"></span> vs. Industry Average 75% (Leading)</li><li>Local Visibility Score: <span id="gbpVisibilityScore"></span> vs. Industry Average 70% (Above Average)</li><li>Total Reviews: <span id="gbpTotalReviews"></span> vs. Industry Average <span id="gbpCompetitorAvgReviews"></span> (Solid base, continue to encourage new reviews)</li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Baseline Assessment Findings</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="gbpAssessmentList"></ul></div></div>
+                    <!-- Organic Search Sub-tab Content -->
+                    <div id="organic-content" class="sub-tab-content bg-white rounded-lg p-4 sm:p-6 shadow-sm hidden"><h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 text-center">Organic Search Performance</h3><div class="h-64 sm:h-72 w-full flex justify-center items-center"><canvas id="organicPerformanceChartCanvas" class="w-full h-full"></canvas></div><div class="mt-8"><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Key Organic Search Metrics</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4" id="organicMetricsList"><li><strong>Impressions:</strong> <span id="organicImpressions"></span></li><li><strong>Clicks:</strong> <span id="organicClicks"></span></li><li><strong>Click-Through Rate (CTR):</strong> <span id="organicCTR"></span></li><li><strong>Average Position:</strong> <span id="organicAvgPosition"></span></li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Top Performing Keywords</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-6" id="topKeywordsList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Top Pages by Organic Traffic</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="topPagesOrganicList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Baseline Assessment Findings</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="organicAssessmentList"></ul></div></div>
+                    <!-- Crawl & Indexing Sub-tab Content -->
+                    <div id="crawl-indexing-content" class="sub-tab-content bg-white rounded-lg p-4 sm:p-6 shadow-sm hidden"><h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 text-center">Google Search Crawl & Indexing Profile</h3><div class="mt-8"><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Key Crawl & Indexing Metrics</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4" id="crawlIndexingMetricsList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Crawl & Indexing Health</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4"><li><strong>Pages Crawled per Day Trend:</strong> <span id="crawlTrend"></span></li><li><strong>Pages Indexed Trend:</strong> <span id="indexTrend"></span></li><li><strong>Soft 404s Detected:</strong> <span id="soft404s"></span></li><li><strong>Server Errors Detected:</strong> <span id="serverErrors"></span></li><li><strong>Crawl Budget Efficiency:</strong> <span id="crawlBudgetEfficiency"></span></li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Technical SEO Audit Findings</h4><div class="overflow-x-auto"><table class="min-w-full bg-white rounded-lg shadow-md"><thead><tr class="bg-gray-200 text-gray-600 uppercase text-xs sm:text-sm leading-normal"><th class="py-3 px-4 sm:px-6 text-left">Issue</th><th class="py-3 px-4 sm:px-6 text-left">Status</th><th class="py-3 px-4 sm:px-6 text-left">Impact</th></tr></thead><tbody class="text-gray-600 text-sm font-light" id="techSeoTableBody"></tbody></table></div><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Comparison to Industry Benchmarks</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2"><li>Crawl Rate: 1,500 pages/day vs. Industry Average 1,200 pages/day (Good)</li><li>Indexed Pages Coverage: 95% vs. Industry Average 90% (Excellent)</li><li>Crawl Errors: 5 vs. Industry Average 20 (Minimal, excellent)</li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Baseline Assessment Findings</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="crawlIndexingAssessmentList"></ul></div></div>
+                    <!-- AI & Gemini Q&A Sub-tab Content -->
+                    <div id="ai-gemini-content" class="sub-tab-content bg-white rounded-lg p-4 sm:p-6 shadow-sm hidden"><h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4 text-center">AI & Gemini Q&A Profile</h3><div class="h-64 sm:h-72 w-full flex justify-center items-center"><canvas id="aiVoiceChartCanvas" class="w-full h-full"></canvas></div><div class="mt-8"><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Key AI & Gemini Q&A Metrics</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4" id="aiGeminiMetricsList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">Conversational AI Insights</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2 mb-4"><li><strong>Featured Snippet Appearances:</strong> <span id="aiFeaturedSnippets"></span></li><li><strong>People Also Ask (PAA) Inclusion:</strong> <span id="aiPAAInclusion"></span></li><li><strong>Direct Answer Rate:</strong> <span id="aiDirectAnswerRate"></span></li><li><strong>Average Conversation Turns:</strong> <span id="aiAvgTurns"></span></li><li><strong>Common Drop-off Points:</strong> <span id="aiDropOffPoints"></span></li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">AI Readiness Checklist</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="aiReadinessList"></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Comparison to Industry Benchmarks</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2"><li>Q&A Index Coverage: 60% vs. Industry Average 80% (Room for growth)</li><li>Q&A Accuracy: 78% vs. Industry Average 85% (Needs improvement)</li><li>Conversational Flow: 3.5 turns vs. Industry Average 4.0 turns (Slightly below)</li></ul><h4 class="text-lg sm:text-xl font-semibold text-gray-700 mt-6 mb-3">Baseline Assessment Findings</h4><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="aiGeminiAssessmentList"></ul></div></div>
+                </div>
+            </section>
+
+            <!-- Profile Information Tab Content -->
+            <section id="profile-information-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md hidden"><h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Profile Information</h2><div id="clientProfileDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base sm:text-lg text-gray-700"></div><div class="mt-8 p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-3">Key Marketing Goals</h3><ul class="list-disc list-inside text-base sm:text-lg text-gray-600 space-y-2" id="clientMarketingGoals"></ul></div></section>
+
+            <!-- Supporting Documents Tab Content -->
+            <section id="supporting-documents-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md hidden">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Supporting Data</h2>
+                <div id="returnToAnalysisContainer" class="text-center mb-4 hidden"><button id="returnToAnalysisButton" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md font-semibold hover:bg-gray-400 transition-colors duration-300 shadow-sm">← Return to Detailed Analysis</button></div>
+                
+                <!-- PURELY MOBILE SUB-NAV: Dropdown Menu -->
+                 <div class="mb-8">
+                    <label for="evidence-select" class="sr-only">Select Evidence Category</label>
+                    <select id="evidence-select" class="w-full p-3 bg-gray-200 border border-gray-300 rounded-lg shadow-inner text-lg font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="gbp" selected>GBP Evidence</option>
+                        <option value="organic">Organic Search Evidence</option>
+                        <option value="crawl-indexing">Crawl & Indexing Evidence</option>
+                        <option value="ai-gemini">AI & Gemini Q&A Evidence</option>
+                    </select>
+                </div>
+                
+                <div id="evidenceGalleryContainer" class="space-y-8"></div>
+            </section>
+
+            <!-- Reports History Tab Content -->
+            <section id="reports-content" class="tab-content bg-gray-50 rounded-lg p-4 sm:p-6 shadow-md hidden"><h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 text-center">Historical Performance Reports</h2><div class="mb-6 text-center"><button id="saveReportButton" class="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-md">Generate New Baseline Report</button></div><div id="historicalReportsList" class="space-y-3"></div></section>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="evidenceModal" class="modal-overlay"><div class="modal-content-wrapper"><button class="modal-close-button" onclick="closeModal()">×</button><img id="modal-image" class="modal-image" src="" alt="Evidence Screenshot"><h3 id="modal-title" class="text-xl sm:text-2xl font-bold text-gray-800 mb-2"></h3><p id="modal-description" class="text-gray-700 mb-2"></p><p id="modal-pdf-reference" class="text-sm text-gray-500"></p></div></div>
+    <!-- Message Box for User Feedback -->
+    <div id="messageBox" class="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white z-[2000] hidden"><span id="messageText"></span></div>
+
+    <script>
+        // --- DATA DEFINITIONS (UNCHANGED) ---
+        let metaScoreData = { labels: ['GBP Score', 'Organic Score', 'AI Voice Score'], datasets: [{ data: [75, 80, 70], backgroundColor: ['#9B59B6', '#2ECC71', '#3498DB'], hoverOffset: 4 }] };
+        const gbpComparisonData = { labels: ['Your Business', 'Competitor A', 'Competitor B'], datasets: [{ label: 'Average Star Rating', data: [4.5, 4.2, 4.0], backgroundColor: '#FFD700' }, { label: 'Number of Reviews', data: [250, 300, 180], backgroundColor: '#FF6347' }, { label: 'Engagement Score', data: [70, 65, 55], backgroundColor: '#4682B4' }] };
+        const organicPerformanceData = { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Organic Traffic', data: [1000, 1200, 1100, 1300, 1500, 1400], borderColor: '#2ECC71', backgroundColor: 'rgba(46, 204, 113, 0.2)', fill: true, tension: 0.1 }, { label: 'Keyword Rankings (Top 10)', data: [50, 55, 52, 60, 65, 62], borderColor: '#9B59B6', backgroundColor: 'rgba(155, 89, 182, 0.2)', fill: true, tension: 0.1 }] };
+        const aiVoiceData = { labels: ['Brand Mentions', 'Sentiment Score', 'Response Rate'], datasets: [{ label: 'Performance Metrics', data: [85, 78, 90], backgroundColor: ['#3498DB', '#E74C3C', '#F39C12'], hoverOffset: 4 }] };
+        let clientProfileData = { basicInfo: { clientName: "Acme Innovations", industry: "Technology Solutions", targetMarket: "Small to Medium Businesses (SMBs)", website: "www.acmeinnovations.com" }, gbpDetails: { businessName: "Acme Innovations Tech Support", address: "123 Tech Avenue, Innovation City, CA 90210", phone: "(555) 123-4567", primaryCategory: "Software Company" }, marketingGoals: ["Increase local search visibility by 25% in the next 6 months.", "Improve organic traffic by 15% through content marketing.", "Enhance brand presence in voice search results for key services.", "Maintain a 4.5+ star rating on Google Business Profile."] };
+        let gbpDetailedMetrics = { visibility: "85%", ranking: "Top 3 for 70% keywords", reviews: { count: 250, rating: 4.5, responseRate: "90%" }, calls: 150, websiteVisits: 300, directionRequests: 80, categories: 5, citations: 120, competitorAverageRating: 4.0, competitorAverageReviews: 180 };
+        let organicSearchMetricsData = { impressions: "500,000", clicks: "25,000", ctr: "5.0%", averagePosition: "8.2" };
+        let topPagesOrganicData = [{ page: '/blog/local-seo-guide', traffic: '15,000' }, { page: '/services/digital-marketing', traffic: '10,000' }, { page: '/contact', traffic: '5,000' }, { page: '/about-us', traffic: '3,000' }];
+        let crawlIndexingMetricsData = { crawlRate: "1,500 pages/day", indexRate: "95% of submitted pages within 24h", coverage: "95%", crawlErrors: 5, indexingIssues: 2, pagesCrawledTrend: "Increasing (avg 10% month-over-month)", pagesIndexedTrend: "Stable (98% of target pages)", soft404s: 1, serverErrors: 0, crawlBudgetEfficiency: "High" };
+        let techSeoAuditData = [{ issue: 'Crawlability Issues', status: 'High', impact: 'Medium' }, { issue: 'Schema Markup Errors', status: 'Medium', impact: 'High' }, { issue: 'Mobile Responsiveness', status: 'Low', impact: 'Medium' }, { issue: 'Broken Links', status: 'Low', impact: 'Low' }, { issue: 'Duplicate Content', status: 'Medium', impact: 'Medium' }];
+        let topKeywordsData = [{ keyword: '"local business consulting"', position: 3 }, { keyword: '"SEO services near me"', position: 5 }, { keyword: '"digital marketing agency [city]"', position: 7 }, { keyword: '"small business marketing tips"', position: 9 }, { keyword: '"online presence management"', position: 4 }];
+        let aiGeminiMetricsData = { qaIndex: 150, qaImpressions: "5,000/month", qaEngagement: "2.5%", qaAccuracy: "78%", qaConversationalFlow: { averageTurns: "3.5 turns", commonDropOffPoints: ["Complex queries", "Product pricing"] }, featuredSnippetAppearances: 45, paaInclusion: "70% of relevant queries", directAnswerRate: "65%" };
+        let aiReadinessData = [{ item: 'Structured Data Implemented', status: 'Yes', color: 'green' }, { item: 'FAQ Content Optimized', status: 'Partial', color: 'yellow' }, { item: 'Natural Language Queries Handled', status: 'Yes', color: 'green' }, { item: 'Voice Search Keywords Identified', status: 'No', color: 'red' }, { item: 'Conversational AI Integration', status: 'No', color: 'red' }];
+        let gbpAssessmentFindings = [{ text: "Competitors have stronger visibility in local search for key terms.", link: { tab: 'supporting-documents', subTab: 'gbp', evidenceId: 'gbp-e1', reference: 'GBP Update PDF, Page 2, Screenshot 1' } }, { text: "Inconsistent NAP (Name, Address, Phone) information across online directories.", link: { tab: 'supporting-documents', subTab: 'gbp', evidenceId: 'gbp-e2', reference: 'GBP Update PDF, Page 3, Screenshot 2' } }, { text: "Lack of high-quality images and video content on GBP.", link: { tab: 'supporting-documents', subTab: 'gbp', evidenceId: 'gbp-e1', reference: 'GBP Update PDF, Page 2, Image Quality' } }, { text: "Missed opportunities for utilizing GBP posts for promotions.", link: { tab: 'supporting-documents', subTab: 'gbp', evidenceId: 'gbp-e1', reference: 'GBP Update PDF, Page 3, Post Usage' } }];
+        let organicAssessmentFindings = [{ text: "Weak and irrelevant inbound links are negatively impacting authority.", link: { tab: 'supporting-documents', subTab: 'organic', evidenceId: 'organic-e1', reference: 'Organic Update PDF, Page 4, Screenshot 1' } }, { text: "Content is not fully optimized for long-tail and conversational keywords.", link: { tab: 'supporting-documents', subTab: 'organic', evidenceId: 'organic-e1', reference: 'Organic Update PDF, Page 4, Keyword Gaps' } }, { text: "Lack of fresh, regularly updated content to maintain topical authority.", link: { tab: 'supporting-documents', subTab: 'organic', evidenceId: 'organic-e1', reference: 'Organic Update PDF, Page 5, Content Freshness' } }, { text: "Sub-optimal Core Web Vitals affecting user experience and ranking.", link: { tab: 'supporting-documents', subTab: 'organic', evidenceId: 'organic-e2', reference: 'Organic Update PDF, Page 5, Screenshot 2' } }];
+        let crawlIndexingAssessmentFindings = [{ text: "Redundant website content detected, potentially causing index bloat.", link: { tab: 'supporting-documents', subTab: 'crawl-indexing', evidenceId: 'crawl-e2', reference: 'Crawl & Indexing PDF, Page 7, Screenshot 2' } }, { text: "Un-optimized meta-tags leading to misinterpretation by search engines.", link: { tab: 'supporting-documents', subTab: 'crawl-indexing', evidenceId: 'crawl-e1', reference: 'Crawl & Indexing PDF, Page 6, Meta Tags' } }, { text: "Numerous broken links (404s, timeouts) hindering crawlability.", link: { tab: 'supporting-documents', subTab: 'crawl-indexing', evidenceId: 'crawl-e1', reference: 'Crawl & Indexing PDF, Page 6, Screenshot 1' } }, { text: "Server errors impacting Googlebot's ability to access pages.", link: { tab: 'supporting-documents', subTab: 'crawl-indexing', evidenceId: 'crawl-e1', reference: 'Crawl & Indexing PDF, Page 6, Server Errors' } }, { text: "Website structure not fully optimized for efficient crawl budget usage.", link: { tab: 'supporting-documents', subTab: 'crawl-indexing', evidenceId: 'crawl-e1', reference: 'Crawl & Indexing PDF, Page 7, Site Structure' } }];
+        let aiGeminiAssessmentFindings = [{ text: "Limited Q&A pairs indexed by Google Gemini for key services.", link: { tab: 'supporting-documents', subTab: 'ai-gemini', evidenceId: 'ai-e1', reference: 'AI & Gemini PDF, Page 8, Screenshot 1' } }, { text: "Accuracy of chatbot responses could be improved for specific queries.", link: { tab: 'supporting-documents', subTab: 'ai-gemini', evidenceId: 'ai-e2', reference: 'AI & Gemini PDF, Page 9, Screenshot 2' } }, { text: "Conversational flow is shorter than industry average, indicating potential user drop-off.", link: { tab: 'supporting-documents', subTab: 'ai-gemini', evidenceId: 'ai-e2', reference: 'AI & Gemini PDF, Page 9, Conversational Flow' } }, { text: "Insufficient structured data implementation for AI understanding.", link: { tab: 'supporting-documents', subTab: 'ai-gemini', evidenceId: 'ai-e1', reference: 'AI & Gemini PDF, Page 8, Schema Gap' } }, { text: "Untapped potential for featured snippet and PAA appearances.", link: { tab: 'supporting-documents', subTab: 'ai-gemini', evidenceId: 'ai-e1', reference: 'AI & Gemini PDF, Page 9, SERP Features' } }];
+        let actionPlanData = [{ category: 'GBP Score', subTabId: 'gbp', sections: [{ title: 'Easy Fix - High Value Tasks', tasks: [{ id: 'gbp1', title: 'Optimize GBP Listing Details', description: 'Ensure all business information (hours, services, description) is accurate and complete. Add high-quality photos.', difficulty: 'Easy', impact: 'High', status: 'pending', weight: 'Light', priority: 'High' }, { id: 'gbp2', title: 'Implement Review Response Strategy', description: 'Respond to all reviews, positive and negative, promptly and professionally. Encourage customers to leave reviews.', difficulty: 'Easy', impact: 'High', status: 'pending', weight: 'Medium', priority: 'High' }] }, { title: 'Slower Fix - High Value Tasks', tasks: [{ id: 'gbp3', title: 'Utilize GBP Posts Regularly', description: 'Publish weekly posts on your Google Business Profile to announce offers, events, or updates. Include relevant keywords.', difficulty: 'Medium', impact: 'Medium', status: 'pending', weight: 'Medium', priority: 'Medium' }, { id: 'gbp4', title: 'Local Citations & Link Building', description: 'Build consistent citations across local directories and acquire local backlinks to boost local authority.', difficulty: 'Hard', impact: 'High', status: 'pending', weight: 'Heavy', priority: 'High' }] }] }, { category: 'Organic Score', subTabId: 'organic', sections: [{ title: 'Easy Fix - High Value Tasks', tasks: [{ id: 'organic1', title: 'Content Optimization for Existing Pages', description: 'Update and enhance existing high-traffic pages with fresh content, relevant keywords, and improved readability.', difficulty: 'Easy', impact: 'High', status: 'pending', weight: 'Medium', priority: 'High' }] }, { title: 'Slower Fix - High Value Tasks', tasks: [{ id: 'organic2', title: 'Develop Comprehensive Content Clusters', description: 'Create interconnected content pieces around core topics to establish topical authority. Optimize for long-tail keywords.', difficulty: 'Hard', impact: 'High', status: 'pending', weight: 'Heavy', priority: 'High' }, { id: 'organic3', title: 'Improve Core Web Vitals', description: 'Optimize website loading speed, interactivity, and visual stability to enhance user experience and search ranking.', difficulty: 'Hard', impact: 'Medium', status: 'pending', weight: 'Heavy', priority: 'Medium' }] }] }, { category: 'AI Voice Score', subTabId: 'ai', sections: [{ title: 'Easy Fix - High Value Tasks', tasks: [{ id: 'ai1', title: 'Enhance FAQ and Q&A Content', description: 'Expand and optimize FAQ sections on your website to directly answer common voice search queries. Implement FAQ schema.', difficulty: 'Easy', impact: 'Medium', status: 'pending', weight: 'Light', priority: 'Medium' }] }, { title: 'Slower Fix - High Value Tasks', tasks: [{ id: 'ai2', title: 'Implement Advanced Structured Data', description: 'Add specific schema types like Product, Service, Event, or HowTo schema to help AI systems understand your content better.', difficulty: 'Medium', impact: 'High', status: 'pending', weight: 'Medium', priority: 'High' }, { id: 'ai3', title: 'Analyze Voice Search Query Data', description: 'Identify common voice search patterns and integrate natural language phrases into your content strategy.', difficulty: 'Hard', impact: 'Medium', status: 'pending', weight: 'Heavy', priority: 'Low' }] }] }];
+        const evidenceGalleryData = [{ category: 'Google Business Profile', subTabId: 'gbp', items: [{ id: 'gbp-e1', title: 'Competitor Local Search Visibility', description: 'Screenshot illustrating local search results where competitors outrank the client for key terms.', thumbnailUrl: 'https://placehold.co/400x250/A7D9B4/000000?text=GBP+Comp+Vis', fullImageUrl: 'https://placehold.co/800x500/A7D9B4/000000?text=GBP+Competitor+Visibility+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 2, Screenshot 1' }, { id: 'gbp-e2', title: 'Inconsistent NAP Data', description: 'Example of inconsistent Name, Address, Phone data across various online directories, affecting local SEO.', thumbnailUrl: 'https://placehold.co/400x250/F8D69A/000000?text=NAP+Inconsistency', fullImageUrl: 'https://placehold.co/800x500/F8D69A/000000?text=NAP+Inconsistency+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 3, Screenshot 2' }] }, { category: 'Organic Search', subTabId: 'organic', items: [{ id: 'organic-e1', title: 'Irrelevant Inbound Links', description: 'Snapshot of a backlink profile showing weak or spammy inbound links that could harm domain authority.', thumbnailUrl: 'https://placehold.co/400x250/C6E0F8/000000?text=Spam+Links', fullImageUrl: 'https://placehold.co/800x500/C6E0F8/000000?text=Irrelevant+Inbound+Links+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 4, Screenshot 1' }, { id: 'organic-e2', title: 'Core Web Vitals Performance', description: 'Google PageSpeed Insights report highlighting poor Core Web Vitals scores for the client\'s website.', thumbnailUrl: 'https://placehold.co/400x250/E6CCEE/000000?text=CWV+Report', fullImageUrl: 'https://placehold.co/800x500/E6CCEE/000000?text=Core+Web+Vitals+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 5, Screenshot 2' }] }, { category: 'Crawl & Indexing', subTabId: 'crawl-indexing', items: [{ id: 'crawl-e1', title: 'Google Search Console Crawl Errors', description: 'Screenshot from GSC showing a significant number of crawl errors (e.g., 404s, server errors).', thumbnailUrl: 'https://placehold.co/400x250/FFE0B2/000000?text=GSC+Crawl+Errors', fullImageUrl: 'https://placehold.co/800x500/FFE0B2/000000?text=GSC+Crawl+Errors+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 6, Screenshot 1' }, { id: 'crawl-e2', title: 'Duplicate Content Flag', description: 'Report showing identified instances of duplicate content on the client\'s website.', thumbnailUrl: 'https://placehold.co/400x250/B2EBF2/000000?text=Duplicate+Content', fullImageUrl: 'https://placehold.co/800x500/B2EBF2/000000?text=Duplicate+Content+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 7, Screenshot 2' }] }, { category: 'AI & Gemini Q&A', subTabId: 'ai-gemini', items: [{ id: 'ai-e1', title: 'Missing FAQ Schema', description: 'Example of a client page lacking proper FAQ schema markup, hindering AI understanding.', thumbnailUrl: 'https://placehold.co/400x250/D1E7DD/000000?text=Missing+FAQ', fullImageUrl: 'https://placehold.co/800x500/D1E7DD/000000?text=Missing+FAQ+Schema+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 8, Screenshot 1' }, { id: 'ai-e2', title: 'Suboptimal AI Response Accuracy', description: 'A screenshot of a chatbot interaction or AI search result showing an inaccurate or unhelpful response to a query.', thumbnailUrl: 'https://placehold.co/400x250/FBE7C6/000000?text=AI+Accuracy', fullImageUrl: 'https://placehold.co/800x500/FBE7C6/000000?text=Suboptimal+AI+Accuracy+Example', pdfReference: 'Agency Mail - Client Brand Domain - GBP Update as of 6_19_2025.pdf, Page 9, Screenshot 2' }] }];
+        let historicalReports = [];
+        const charts = {};
+        let lastAnalysisSubTab = 'local';
+        let currentActiveTab = 'dashboard';
+        let currentActiveSubTab = 'local';
+        let currentActivePlanSubTab = 'gbp';
+        let currentActiveEvidenceSubTab = 'gbp';
+        
+        // --- CHART & UI FUNCTIONS (UNCHANGED, BUT RE-INCLUDED FOR COMPLETENESS) ---
+        function destroyChart(chartName) { if (charts[chartName]) { charts[chartName].destroy(); charts[chartName] = null; } }
+        function createMetaScoreChart() { destroyChart('metaScore'); const ctx = document.getElementById('metaScoreChartCanvas').getContext('2d'); charts.metaScore = new Chart(ctx, { type: 'doughnut', data: metaScoreData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Agency Brand Score Breakdown' } } } }); }
+        function createGbpComparisonChart() { destroyChart('gbp'); const ctx = document.getElementById('gbpComparisonChartCanvas').getContext('2d'); charts.gbp = new Chart(ctx, { type: 'bar', data: gbpComparisonData, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'top' }, title: { display: true, text: 'GBP Performance Comparison' } } } }); }
+        function createOrganicPerformanceChart() { destroyChart('organic'); const ctx = document.getElementById('organicPerformanceChartCanvas').getContext('2d'); charts.organic = new Chart(ctx, { type: 'line', data: organicPerformanceData, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Organic Performance Over Time' } } } }); }
+        function createAiVoiceChart() { destroyChart('ai'); const ctx = document.getElementById('aiVoiceChartCanvas').getContext('2d'); charts.ai = new Chart(ctx, { type: 'polarArea', data: aiVoiceData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: 'AI Voice Readiness Metrics' } } } }); }
+        function populateClientProfile() { const container = document.getElementById('clientProfileDetails'); if (container) { container.innerHTML = `<div class="p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-3">Basic Information</h3><p><strong>Client Name:</strong> ${clientProfileData.basicInfo.clientName}</p><p><strong>Industry:</strong> ${clientProfileData.basicInfo.industry}</p><p><strong>Target Market:</strong> ${clientProfileData.basicInfo.targetMarket}</p><p><strong>Website:</strong> <a href="https://${clientProfileData.basicInfo.website}" class="text-blue-600 hover:underline" target="_blank">${clientProfileData.basicInfo.website}</a></p></div><div class="p-5 bg-white rounded-lg shadow-sm border border-gray-200"><h3 class="text-xl font-semibold text-gray-700 mb-3">Google Business Profile Details</h3><p><strong>Business Name:</strong> ${clientProfileData.gbpDetails.businessName}</p><p><strong>Address:</strong> ${clientProfileData.gbpDetails.address}</p><p><strong>Phone:</strong> ${clientProfileData.gbpDetails.phone}</p><p><strong>Primary Category:</strong> ${clientProfileData.gbpDetails.primaryCategory}</p></div>`; } const goalsList = document.getElementById('clientMarketingGoals'); if (goalsList) { goalsList.innerHTML = ''; clientProfileData.marketingGoals.forEach(goal => { const li = document.createElement('li'); li.textContent = goal; goalsList.appendChild(li); }); } }
+        function populateGbpMetrics() { const list = document.getElementById('gbpMetricsList'); if(list) list.innerHTML = `<li><strong>Visibility:</strong> ${gbpDetailedMetrics.visibility}</li><li><strong>Ranking:</strong> ${gbpDetailedMetrics.ranking}</li><li><strong>Reviews:</strong> ${gbpDetailedMetrics.reviews.count} (Rating: ${gbpDetailedMetrics.reviews.rating}, Response Rate: ${gbpDetailedMetrics.reviews.responseRate})</li><li><strong>Categories:</strong> ${gbpDetailedMetrics.categories}</li><li><strong>Citations:</strong> ${gbpDetailedMetrics.citations}</li>`; document.getElementById('gbpCalls').textContent = gbpDetailedMetrics.calls; document.getElementById('gbpWebsiteVisits').textContent = gbpDetailedMetrics.websiteVisits; document.getElementById('gbpDirectionRequests').textContent = gbpDetailedMetrics.directionRequests; document.getElementById('gbpAvgRating').textContent = gbpDetailedMetrics.reviews.rating; document.getElementById('gbpReviewResponseRate').textContent = gbpDetailedMetrics.reviews.responseRate; document.getElementById('gbpVisibilityScore').textContent = gbpDetailedMetrics.visibility; document.getElementById('gbpTotalReviews').textContent = gbpDetailedMetrics.reviews.count; document.getElementById('gbpCompetitorAvgRating').textContent = gbpDetailedMetrics.competitorAverageRating; document.getElementById('gbpCompetitorAvgReviews').textContent = gbpDetailedMetrics.competitorAverageReviews; }
+        function populateOrganicMetrics() { const el = document.getElementById('organicImpressions'); if(el) el.textContent = organicSearchMetricsData.impressions; document.getElementById('organicClicks').textContent = organicSearchMetricsData.clicks; document.getElementById('organicCTR').textContent = organicSearchMetricsData.ctr; document.getElementById('organicAvgPosition').textContent = organicSearchMetricsData.averagePosition; }
+        function populateTopPages() { const list = document.getElementById('topPagesOrganicList'); if(list) { list.innerHTML = ''; topPagesOrganicData.forEach(item => { const li = document.createElement('li'); li.textContent = `${item.page} - Traffic: ${item.traffic}`; list.appendChild(li); }); } }
+        function populateTopKeywords() { const list = document.getElementById('topKeywordsList'); if(list) { list.innerHTML = ''; topKeywordsData.forEach(item => { const li = document.createElement('li'); li.textContent = `${item.keyword} - Position ${item.position}`; list.appendChild(li); }); } }
+        function populateTechSeoTable() { const tbody = document.getElementById('techSeoTableBody'); if(tbody) { tbody.innerHTML = ''; techSeoAuditData.forEach(item => { const row = `<tr class="border-b border-gray-200 hover:bg-gray-100"><td class="py-3 px-4 sm:px-6 text-left whitespace-nowrap">${item.issue}</td><td class="py-3 px-4 sm:px-6 text-left">${item.status}</td><td class="py-3 px-4 sm:px-6 text-left">${item.impact}</td></tr>`; tbody.insertAdjacentHTML('beforeend', row); }); } }
+        function populateCrawlIndexingMetrics() { const list = document.getElementById('crawlIndexingMetricsList'); if(list) list.innerHTML = `<li><strong>Crawl Rate:</strong> ${crawlIndexingMetricsData.crawlRate}</li><li><strong>Index Rate:</strong> ${crawlIndexingMetricsData.indexRate}</li><li><strong>Coverage:</strong> ${crawlIndexingMetricsData.coverage}</li><li><strong>Crawl Errors:</strong> ${crawlIndexingMetricsData.crawlErrors}</li><li><strong>Indexing Issues:</strong> ${crawlIndexingMetricsData.indexingIssues}</li>`; document.getElementById('crawlTrend').textContent = crawlIndexingMetricsData.pagesCrawledTrend; document.getElementById('indexTrend').textContent = crawlIndexingMetricsData.pagesIndexedTrend; document.getElementById('soft404s').textContent = crawlIndexingMetricsData.soft404s; document.getElementById('serverErrors').textContent = crawlIndexingMetricsData.serverErrors; document.getElementById('crawlBudgetEfficiency').textContent = crawlIndexingMetricsData.crawlBudgetEfficiency; }
+        function populateAiGeminiMetrics() { const list = document.getElementById('aiGeminiMetricsList'); if(list) list.innerHTML = `<li><strong>Q&A Index:</strong> ${aiGeminiMetricsData.qaIndex} pairs indexed</li><li><strong>Q&A Impressions:</strong> ${aiGeminiMetricsData.qaImpressions}</li><li><strong>Q&A Engagement:</strong> ${aiGeminiMetricsData.qaEngagement}</li><li><strong>Q&A Accuracy:</strong> ${aiGeminiMetricsData.qaAccuracy}</li><li><strong>Q&A Conversational Flow:</strong> ${aiGeminiMetricsData.qaConversationalFlow.averageTurns}</li>`; document.getElementById('aiFeaturedSnippets').textContent = aiGeminiMetricsData.featuredSnippetAppearances; document.getElementById('aiPAAInclusion').textContent = aiGeminiMetricsData.paaInclusion; document.getElementById('aiDirectAnswerRate').textContent = aiGeminiMetricsData.directAnswerRate; document.getElementById('aiAvgTurns').textContent = aiGeminiMetricsData.qaConversationalFlow.averageTurns; document.getElementById('aiDropOffPoints').textContent = aiGeminiMetricsData.qaConversationalFlow.commonDropOffPoints.join(', '); }
+        function populateAiReadiness() { const list = document.getElementById('aiReadinessList'); if(list) { list.innerHTML = ''; aiReadinessData.forEach(item => { const li = document.createElement('li'); li.innerHTML = `${item.item}: <span class="font-semibold text-${item.color}-500">${item.status}</span>`; list.appendChild(li); }); } }
+        function populateAssessmentList(listId, findingsData, sourceSubTabId) { const list = document.getElementById(listId); if (list) { list.innerHTML = ''; findingsData.forEach(finding => { const li = document.createElement('li'); li.textContent = finding.text; if (finding.link) { const span = document.createElement('span'); span.className = 'evidence-link'; span.textContent = ' (View Evidence)'; span.addEventListener('click', () => navigateToEvidence(finding.link.subTab, sourceSubTabId, finding.link.evidenceId)); li.appendChild(span); } list.appendChild(li); }); } }
+        function populateGbpAssessment() { populateAssessmentList('gbpAssessmentList', gbpAssessmentFindings, 'local'); }
+        function populateOrganicAssessment() { populateAssessmentList('organicAssessmentList', organicAssessmentFindings, 'organic'); }
+        function populateCrawlIndexingAssessment() { populateAssessmentList('crawlIndexingAssessmentList', crawlIndexingAssessmentFindings, 'crawl-indexing'); }
+        function populateAiGeminiAssessment() { populateAssessmentList('aiGeminiAssessmentList', aiGeminiAssessmentFindings, 'ai-gemini'); }
+        function populateActionPlan(selectedSubTabId) { const container = document.getElementById('actionPlanContainer'); if (!container) return; container.innerHTML = ''; const selectedCategoryData = actionPlanData.find(cat => cat.subTabId === selectedSubTabId); if (selectedCategoryData) { const categoryDiv = document.createElement('div'); categoryDiv.className = 'mb-8 animate-fade-in'; categoryDiv.innerHTML = `<h3 class="text-2xl font-bold text-gray-800 mb-4 p-3 bg-gray-200 rounded-md shadow-sm">${selectedCategoryData.category} Action Items</h3>`; container.appendChild(categoryDiv); selectedCategoryData.sections.forEach(section => { const sectionDiv = document.createElement('div'); sectionDiv.className = 'mb-6'; sectionDiv.innerHTML = `<h4 class="text-xl font-semibold text-gray-700 mb-3">${section.title}</h4>`; categoryDiv.appendChild(sectionDiv); const tasksGrid = document.createElement('div'); tasksGrid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6'; sectionDiv.appendChild(tasksGrid); const sortedTasks = section.tasks.sort((a, b) => { const difficultyOrder = {'Easy': 1, 'Medium': 2, 'Hard': 3}; const impactOrder = {'High': 1, 'Medium': 2, 'Low': 3}; const diffA = difficultyOrder[a.difficulty]; const diffB = difficultyOrder[b.difficulty]; if (diffA !== diffB) return diffA - diffB; return impactOrder[a.impact] - impactOrder[b.impact]; }); sortedTasks.forEach(task => { const taskDiv = document.createElement('div'); taskDiv.id = `action-card-${task.id}`; taskDiv.className = `action-card bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-200 cursor-pointer ${task.status === 'completed' ? 'completed-task' : ''}`; taskDiv.innerHTML = `<div class="flex items-center mb-2"><input type="checkbox" id="task-checkbox-${task.id}" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500" ${task.status === 'completed' ? 'checked' : ''}><h4 class="text-lg sm:text-xl font-semibold text-gray-700">${task.title}</h4></div><p class="text-xs sm:text-sm text-gray-500 mb-2"><span class="font-semibold ${task.difficulty === 'Easy' ? 'text-green-600' : task.difficulty === 'Medium' ? 'text-yellow-600' : 'text-red-600'}">Difficulty: ${task.difficulty}</span> | <span class="font-semibold ${task.impact === 'High' ? 'text-purple-600' : task.impact === 'Medium' ? 'text-orange-600' : 'text-blue-600'}">Impact: ${task.impact}</span> | <span class="font-semibold">Weight: ${task.weight}</span> | <span class="font-semibold">Priority: ${task.priority}</span></p><p id="description-${task.id}" class="text-gray-600 transition-all duration-300 ${!task.showDescription ? 'hidden' : ''}">${task.description}</p>`; tasksGrid.appendChild(taskDiv); taskDiv.addEventListener('click', function(event) { if (event.target.type !== 'checkbox') document.getElementById(`description-${task.id}`).classList.toggle('hidden'); }); const checkbox = document.getElementById(`task-checkbox-${task.id}`); checkbox.addEventListener('change', function() { const parentCard = this.closest('.action-card'); let foundTaskData = null; actionPlanData.forEach(category => category.sections.forEach(sec => { const taskInSec = sec.tasks.find(t => t.id === task.id); if (taskInSec) foundTaskData = taskInSec; })); if (this.checked) { parentCard.classList.add('completed-task'); if (foundTaskData) foundTaskData.status = 'completed'; } else { parentCard.classList.remove('completed-task'); if (foundTaskData) foundTaskData.status = 'pending'; } }); }); }); } else { container.innerHTML = '<p class="text-gray-500 text-center">No action plan items available for this category.</p>'; } }
+        function populateEvidenceGallery(selectedSubTabId) { const container = document.getElementById('evidenceGalleryContainer'); if (!container) return; container.innerHTML = ''; const selectedCategoryData = evidenceGalleryData.find(cat => cat.subTabId === selectedSubTabId); if (selectedCategoryData) { const categoryDiv = document.createElement('div'); categoryDiv.className = 'mb-8 animate-fade-in'; categoryDiv.innerHTML = `<h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 p-3 bg-gray-200 rounded-md shadow-sm">${selectedCategoryData.category} Evidence</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="current-evidence-grid"></div>`; container.appendChild(categoryDiv); const evidenceGrid = categoryDiv.querySelector(`#current-evidence-grid`); selectedCategoryData.items.forEach(item => { const evidenceCard = document.createElement('div'); evidenceCard.id = item.id; evidenceCard.className = 'bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-pointer flex flex-col items-center text-center'; evidenceCard.innerHTML = `<img src="${item.thumbnailUrl}" alt="${item.title}" class="w-full h-auto rounded-md mb-3 object-cover"><h4 class="text-lg font-semibold text-gray-700 mb-1">${item.title}</h4><p class="text-sm text-gray-600 mb-2 flex-grow">${item.description}</p><p class="text-xs text-gray-500 font-medium">${item.pdfReference}</p>`; evidenceCard.addEventListener('click', () => openModal(item.title, item.description, item.fullImageUrl, item.pdfReference)); evidenceGrid.appendChild(evidenceCard); }); } else { container.innerHTML = '<p class="text-gray-500 text-center">No evidence available for this category.</p>'; } }
+        function populateAllUISections() { createMetaScoreChart(); const currentOverallScore = metaScoreData.datasets[0].data.reduce((sum, score) => sum + score, 0) / metaScoreData.datasets[0].data.length; document.querySelector('h2.text-2xl.sm\\:text-3xl.font-bold').textContent = `Agency Brand Score: ${Math.round(currentOverallScore)}%`; populateClientProfile(); populateGbpMetrics(); populateOrganicMetrics(); populateTopKeywords(); populateTopPages(); populateTechSeoTable(); populateCrawlIndexingMetrics(); populateAiGeminiMetrics(); populateAiReadiness(); populateGbpAssessment(); populateOrganicAssessment(); populateCrawlIndexingAssessment(); populateAiGeminiAssessment(); }
+        
+        // --- NAVIGATION LOGIC (REFACTORED FOR DROPDOWNS) ---
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('animate-fade-in');
+            });
+            document.querySelectorAll('nav button[data-tab]').forEach(button => {
+                button.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+                button.classList.add('text-gray-700', 'hover:bg-gray-300');
+            });
+
+            const targetContent = document.getElementById(`${tabId}-content`);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+                void targetContent.offsetWidth;
+                targetContent.classList.add('animate-fade-in');
+            }
+            const targetButton = document.getElementById(`tab-${tabId}`);
+            if (targetButton) {
+                targetButton.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+                targetButton.classList.remove('text-gray-700', 'hover:bg-gray-300');
+            }
+
+            currentActiveTab = tabId;
+
+            const returnButtonContainer = document.getElementById('returnToAnalysisContainer');
+            if (returnButtonContainer && tabId !== 'supporting-documents') {
+                returnButtonContainer.classList.add('hidden');
+            }
+
+            if (tabId === 'analysis') {
+                showSubTab(currentActiveSubTab);
+            } else {
+                destroyChart('gbp');
+                destroyChart('organic');
+                destroyChart('ai');
+            }
+
+            if (tabId === 'profile-information') populateClientProfile();
+            if (tabId === 'supporting-documents') showEvidenceSubTab(currentActiveEvidenceSubTab);
+            if (tabId === 'plan') showActionPlanSubTab(currentActivePlanSubTab);
+            if (tabId === 'reports') fetchHistoricalReports();
+
+            if (!charts.metaScore) {
+                createMetaScoreChart();
+            } else {
+                setTimeout(() => { if (charts.metaScore) charts.metaScore.resize(); }, 10);
+            }
+        }
+
+        function showSubTab(subTabId) {
+            lastAnalysisSubTab = subTabId;
+            document.querySelectorAll('.sub-tab-content').forEach(content => content.classList.add('hidden'));
+            
+            const targetContent = document.getElementById(`${subTabId}-content`);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+                void targetContent.offsetWidth;
+                targetContent.classList.add('animate-fade-in');
+            }
+            
+            // Sync dropdown with current state
+            document.getElementById('analysis-select').value = subTabId;
+            currentActiveSubTab = subTabId;
+
+            destroyChart('gbp');
+            destroyChart('organic');
+            destroyChart('ai');
+
+            if (subTabId === 'local') { createGbpComparisonChart(); populateGbpMetrics(); populateGbpAssessment(); }
+            if (subTabId === 'organic') { createOrganicPerformanceChart(); populateOrganicMetrics(); populateTopKeywords(); populateTopPages(); populateOrganicAssessment(); }
+            if (subTabId === 'crawl-indexing') { populateCrawlIndexingMetrics(); populateTechSeoTable(); populateCrawlIndexingAssessment(); }
+            if (subTabId === 'ai-gemini') { createAiVoiceChart(); populateAiGeminiMetrics(); populateAiReadiness(); populateAiGeminiAssessment(); }
+            
+            setTimeout(() => {
+                if (charts.gbp) charts.gbp.resize();
+                if (charts.organic) charts.organic.resize();
+                if (charts.ai) charts.ai.resize();
+            }, 10);
+        }
+
+        function showActionPlanSubTab(subTabId) {
+            currentActivePlanSubTab = subTabId;
+            // Sync dropdown with current state
+            document.getElementById('plan-select').value = subTabId;
+            populateActionPlan(subTabId);
+        }
+
+        function showEvidenceSubTab(subTabId) {
+            currentActiveEvidenceSubTab = subTabId;
+            // Sync dropdown with current state
+            document.getElementById('evidence-select').value = subTabId;
+            populateEvidenceGallery(subTabId);
+        }
+
+        function navigateToEvidence(targetSubTab, sourceAnalysisSubTab, targetEvidenceId) {
+            showTab('supporting-documents');
+            showEvidenceSubTab(targetSubTab);
+            lastAnalysisSubTab = sourceAnalysisSubTab;
+            document.getElementById('returnToAnalysisContainer')?.classList.remove('hidden');
+
+            if (targetEvidenceId) {
+                setTimeout(() => {
+                    const targetElement = document.getElementById(targetEvidenceId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetElement.style.transition = 'background-color 0.5s ease-in-out';
+                        targetElement.style.backgroundColor = '#E0F2FE';
+                        setTimeout(() => { targetElement.style.backgroundColor = ''; }, 1500);
+                    }
+                }, 100);
+            }
+        }
+        
+        function returnToAnalysis() {
+            showTab('analysis');
+            showSubTab(lastAnalysisSubTab);
+            document.getElementById('returnToAnalysisContainer')?.classList.add('hidden');
+        }
+        
+        // --- HISTORY & MODAL FUNCTIONS (UNCHANGED) ---
+        function saveCurrentReport() { try { const currentReportData = { id: Date.now().toString(), reportDate: new Date(), clientProfile: JSON.parse(JSON.stringify(clientProfileData)), metaScores: { gbp: metaScoreData.datasets[0].data[0], organic: metaScoreData.datasets[0].data[1], ai: metaScoreData.datasets[0].data[2], overallBrandScore: metaScoreData.datasets[0].data.reduce((sum, score) => sum + score, 0) / metaScoreData.datasets[0].data.length }, gbpMetrics: JSON.parse(JSON.stringify(gbpDetailedMetrics)), organicMetrics: { searchData: JSON.parse(JSON.stringify(organicSearchMetricsData)), topKeywords: JSON.parse(JSON.stringify(topKeywordsData)), topPages: JSON.parse(JSON.stringify(topPagesOrganicData)) }, crawlIndexingMetrics: { metrics: JSON.parse(JSON.stringify(crawlIndexingMetricsData)), techSeoAudit: JSON.parse(JSON.stringify(techSeoAuditData)) }, aiGeminiMetrics: { metrics: JSON.parse(JSON.stringify(aiGeminiMetricsData)), readiness: JSON.parse(JSON.stringify(aiReadinessData)) }, gbpAssessment: JSON.parse(JSON.stringify(gbpAssessmentFindings)), organicAssessment: JSON.parse(JSON.stringify(organicAssessmentFindings)), crawlIndexingAssessment: JSON.parse(JSON.stringify(crawlIndexingAssessmentFindings)), aiGeminiAssessment: JSON.parse(JSON.stringify(aiGeminiAssessmentFindings)), actionPlanState: JSON.parse(JSON.stringify(actionPlanData)) }; historicalReports.unshift(currentReportData); updateHistoricalReportsUI(); showMessage("Current report saved to history!", "success"); } catch (error) { console.error("Error saving report:", error); showMessage("Error saving report. Please try again.", "error"); } }
+        function fetchHistoricalReports() { updateHistoricalReportsUI(); }
+        function loadHistoricalReport(reportId) { const reportToLoad = historicalReports.find(report => report.id === reportId); if (!reportToLoad) { showMessage("Selected report not found.", "error"); return; } clientProfileData = JSON.parse(JSON.stringify(reportToLoad.clientProfile || clientProfileData)); gbpDetailedMetrics = JSON.parse(JSON.stringify(reportToLoad.gbpMetrics || gbpDetailedMetrics)); organicSearchMetricsData = JSON.parse(JSON.stringify(reportToLoad.organicMetrics?.searchData || organicSearchMetricsData)); topKeywordsData = JSON.parse(JSON.stringify(reportToLoad.organicMetrics?.topKeywords || topKeywordsData)); topPagesOrganicData = JSON.parse(JSON.stringify(reportToLoad.organicMetrics?.topPages || topPagesOrganicData)); crawlIndexingMetricsData = JSON.parse(JSON.stringify(reportToLoad.crawlIndexingMetrics?.metrics || crawlIndexingMetricsData)); techSeoAuditData = JSON.parse(JSON.stringify(reportToLoad.crawlIndexingMetrics?.techSeoAudit || techSeoAuditData)); aiGeminiMetricsData = JSON.parse(JSON.stringify(reportToLoad.aiGeminiMetrics?.metrics || aiGeminiMetricsData)); aiReadinessData = JSON.parse(JSON.stringify(reportToLoad.aiGeminiMetrics?.readiness || aiReadinessData)); gbpAssessmentFindings = JSON.parse(JSON.stringify(reportToLoad.gbpAssessment || gbpAssessmentFindings)); organicAssessmentFindings = JSON.parse(JSON.stringify(reportToLoad.organicAssessment || organicAssessmentFindings)); crawlIndexingAssessmentFindings = JSON.parse(JSON.stringify(reportToLoad.crawlIndexingAssessment || crawlIndexingAssessmentFindings)); aiGeminiAssessmentFindings = JSON.parse(JSON.stringify(reportToLoad.aiGeminiAssessment || aiGeminiAssessmentFindings)); actionPlanData = JSON.parse(JSON.stringify(reportToLoad.actionPlanState || actionPlanData)); if (reportToLoad.metaScores) { metaScoreData.datasets[0].data = [reportToLoad.metaScores.gbp, reportToLoad.metaScores.organic, reportToLoad.metaScores.ai]; } populateAllUISections(); showMessage(`Report from ${new Date(reportToLoad.reportDate).toLocaleDateString()} loaded.`, "info"); }
+        function updateHistoricalReportsUI() { const list = document.getElementById('historicalReportsList'); if (!list) return; list.innerHTML = ''; if (historicalReports.length === 0) { list.innerHTML = '<p class="text-gray-500 text-center">No historical reports available yet. Generate a baseline report to start tracking!</p>'; return; } historicalReports.forEach(report => { const li = document.createElement('li'); li.className = 'flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-3 rounded-md shadow-sm border border-gray-200 mb-2 space-y-2 sm:space-y-0'; const dateString = new Date(report.reportDate).toLocaleString(); li.innerHTML = `<span class="font-medium text-gray-700">Report on: ${dateString}</span><button class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 w-full sm:w-auto" data-report-id="${report.id}">Load Report</button>`; list.appendChild(li); }); list.querySelectorAll('button').forEach(button => { button.addEventListener('click', (event) => loadHistoricalReport(event.target.dataset.reportId)); }); }
+        function showMessage(message, type = 'info') { const msgBox = document.getElementById('messageBox'); const msgText = document.getElementById('messageText'); if (!msgBox || !msgText) return; msgText.textContent = message; msgBox.className = 'fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white z-[2000] transition-opacity duration-300 ease-out'; msgBox.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500'); if (type === 'success') msgBox.classList.add('bg-green-500'); else if (type === 'error') msgBox.classList.add('bg-red-500'); else msgBox.classList.add('bg-blue-500'); msgBox.classList.remove('hidden'); msgBox.style.opacity = '1'; setTimeout(() => { msgBox.style.opacity = '0'; setTimeout(() => msgBox.classList.add('hidden'), 300); }, 5000); }
+        function openModal(title, description, fullImageUrl, pdfReference) { const modal = document.getElementById('evidenceModal'); document.getElementById('modal-title').textContent = title; document.getElementById('modal-description').textContent = description; document.getElementById('modal-image').src = fullImageUrl; document.getElementById('modal-pdf-reference').textContent = `Reference: ${pdfReference}`; modal.classList.add('active'); }
+        function closeModal() { document.getElementById('evidenceModal').classList.remove('active'); }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('reportDate').textContent = `Date: ${today.toLocaleDateString('en-US', options)}`;
+
+            populateAllUISections();
+
+            // Event Listeners for Main Tabs (Buttons)
+            document.querySelectorAll('nav button[data-tab]').forEach(button => {
+                button.addEventListener('click', () => showTab(button.dataset.tab));
+            });
+            
+            // Event Listeners for Sub-Tabs (Dropdowns)
+            document.getElementById('analysis-select')?.addEventListener('change', (event) => showSubTab(event.target.value));
+            document.getElementById('plan-select')?.addEventListener('change', (event) => showActionPlanSubTab(event.target.value));
+            document.getElementById('evidence-select')?.addEventListener('change', (event) => showEvidenceSubTab(event.target.value));
+
+            // Other Event Listeners
+            document.getElementById('saveReportButton')?.addEventListener('click', saveCurrentReport);
+            document.getElementById('returnToAnalysisButton')?.addEventListener('click', returnToAnalysis);
+            const evidenceModal = document.getElementById('evidenceModal');
+            evidenceModal?.addEventListener('click', (event) => { if (event.target === evidenceModal) closeModal(); });
+            document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && evidenceModal?.classList.contains('active')) closeModal(); });
+
+            // Set initial state
+            showTab('dashboard');
+        });
+
+        window.addEventListener('resize', () => {
+            Object.values(charts).forEach(chart => { if (chart) chart.resize(); });
+        });
+    </script>
+</body>
+</html>
