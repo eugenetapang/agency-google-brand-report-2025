@@ -18,7 +18,7 @@ It's designed to be:
 
 ---
 
-## 🚀 Live Demo is being build right now with a full application capability by Google Gemini 2.5 Pro, you can see the plan here: https://github.com/eugenetapang/agency-google-brand-report-2025/blob/main/gemini-25-pro-plan.md
+## 🚀 Live Demo is being built right now with a full application capability by Google Gemini 2.5 Pro, you can see the plan here: https://github.com/eugenetapang/agency-google-brand-report-2025/blob/main/gemini-25-pro-plan.md
 
 **( check the repo, you can see the entire plan, I am building right as we speak with this plan, good luck to us. )**
 
