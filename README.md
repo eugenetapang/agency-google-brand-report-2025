@@ -18,9 +18,11 @@ It's designed to be:
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live Demo is being build right now with a full application capability by Google Gemini 2.5 Pro, you can see the plan here: https://github.com/eugenetapang/agency-google-brand-report-2025/blob/main/gemini-25-pro-plan.md
 
-**( Coming Soon, Super Busy at the Moment )**
+**( check the repo, you can see the entire plan, I am building right as we speak with this plan, good luck to us. )**
+
+## 🚀 **( Coming Soon, Super Busy at the Moment )**
 
 ---
 
@@ -117,11 +119,6 @@ All content in this template is controlled by JavaScript objects located inside 
 6. Screenshots for Your Reference
 
 <a href="https://ibb.co/dsfPsycj"><img src="https://i.ibb.co/dsfPsycj/2025-google-brand-report-1.jpg" alt="2025-google-brand-report-1" border="0"></a> <a href="https://ibb.co/Mkcm2XPh"><img src="https://i.ibb.co/Mkcm2XPh/2025-google-brand-report-2.jpg" alt="2025-google-brand-report-2" border="0"></a> <a href="https://ibb.co/C3JhDhpy"><img src="https://i.ibb.co/C3JhDhpy/2025-google-brand-report-3.jpg" alt="2025-google-brand-report-3" border="0"></a> <a href="https://ibb.co/gLjb7Nhb"><img src="https://i.ibb.co/gLjb7Nhb/2025-google-brand-report-4.jpg" alt="2025-google-brand-report-4" border="0"></a> <a href="https://ibb.co/W4hpr5BM"><img src="https://i.ibb.co/W4hpr5BM/2025-google-brand-report-5.jpg" alt="2025-google-brand-report-5" border="0"></a> <a href="https://ibb.co/svJSvcKY"><img src="https://i.ibb.co/svJSvcKY/2025-google-brand-report-6.jpg" alt="2025-google-brand-report-6" border="0"></a>
-
-## 🚀 Live Demo is being build right now with a full application capability by Google Gemini 2.5 Pro
-
-**( check the repo, you can see the entire plan, I am building right as we speak with this plan, good luck to us. )**
-
 
 ## 📜 License
 
