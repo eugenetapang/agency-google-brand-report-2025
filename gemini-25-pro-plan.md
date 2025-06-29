@@ -1,8 +1,16 @@
-# Google AI 2.5 Pro - App Experiment - 6-29-2025
+# Google AI 2.5 Pro - App Experiment - 6-29-2025 - The AI No Hype Story
 
-I began this experimental project thinking can I build in modular pieces going from smaller codebase to the large meta codebase concept of the app to see if it was possible.  Sadly, this is a very frustrating direction to take, and you will find as the context memory and LLM comprehension will begin to lag when you are consuming above 100k tokens, I was complaining to the LLM that it was straight out getting dumber and kept apologizing which I find funny since we know this thing isn't sentient, or is it?!!!
+I began this experimental project wondering whether I could build in modular pieces—starting from a smaller codebase and gradually expanding toward the larger, meta-codebase concept of the app—to see if it was even possible. Sadly, it turned out to be a frustrating path to take. You'll notice that as the context memory and LLM comprehension begin to strain with token usage exceeding 100k, performance starts to lag. At one point, I joked with the LLM about it getting dumber—it kept apologizing, which I found oddly amusing, considering we know it isn’t sentient... or is it?
 
-Nonetheless, I gave it a huge task to build the entirety of this app with a plan built on 3 documents; plan.txt which was essentially a BRD (Busienss Requirement Document), and 2 index.html web pages that presented a UI with some generalized content, categorical to detail content examples, and a general scoring system, and datapoints in a simple UI built by Gemini Canvas.  So it begins and ends with this conversation below.  The practice of getting to the final product I will share at a later date, to help you precisely set expectations for building apps with Gemini or any other AI Code Builder as matter of subjectivity and a way to size up what it takes to get it done.  Enjoy
+Nonetheless, I tasked it with building the entirety of the app based on a plan composed of three documents:
+
+* plan.txt, which essentially served as a BRD (Business Requirements Document)
+
+* Two index.html web pages that defined a UI with generalized content, category-to-detail examples, a basic scoring system, and some structured datapoints—presented in a simple UI built using Gemini Canvas.
+
+So it begins—and ends—with the conversation below. I’ll share the full journey to the final product at a later date, to help you better set expectations when building apps with Gemini or any AI code builder. After all, it’s a matter of subjectivity—and a way to measure what it really takes to get things done.
+
+Enjoy.
 
 ### Start of Plan
 
