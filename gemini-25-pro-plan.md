@@ -1,4 +1,4 @@
-# Google AI 2.5 Pro - App Experiment - 6-29-2025 - The AI No Hype Story
+# Google's AI Gemini 2.5 Pro - App Experiment - 6-29-2025 - The AI No Hype Story
 
 I began this experimental project wondering whether I could build in modular pieces—starting from a smaller codebase and gradually expanding toward the larger, meta-codebase concept of the app—to see if it was even possible. Sadly, it turned out to be a frustrating path to take. You'll notice that as the context memory and LLM comprehension begin to strain with token usage exceeding 100k, performance starts to lag. At one point, I joked with the LLM about it getting dumber—it kept apologizing, which I found oddly amusing, considering we know it isn’t sentient... or is it?
 
