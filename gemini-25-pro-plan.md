@@ -12,7 +12,7 @@ So it begins—and ends—with the conversation below. I’ll share the full jou
 
 Enjoy.
 
-### P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  **If you are still reading you are a masochist like me. :->**
+P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  If you are still reading. **"You are a Masochist just like Me. :-> Welcome Friend**
 
 ### Start of Plan
 
