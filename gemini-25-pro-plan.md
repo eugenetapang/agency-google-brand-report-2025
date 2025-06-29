@@ -23,7 +23,7 @@ P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Tim
 ## The Plan
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
 
-Here's a comprehensive phased plan designed to build your Google Performance Reporting Tool step-by-step. Each phase has a clear rationale, desired outcome, and includes a specific, copy-pasteable prompt for a large language model (LLM) like Gemini.
+Here's a comprehensive phased plan designed to build your Google Performance Reporting Tool step-by-step. Each phase has a clear rationale, desired outcome, and includes a specific, copy-pasteable prompt for a large language model (LLM) like Gemini, Anthropic, OpenAI, DeepSeek, and others.
 
 ## Overall Strategy:
 We will tackle this project incrementally, building upon stable and robust components. The focus will be on achieving core interactivity and data dynamism first, then layering on advanced features like historical reporting and theming. We'll prioritize consistency in user experience patterns (e.g., how cards and modals behave) across different sections of the report.
