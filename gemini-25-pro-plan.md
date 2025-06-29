@@ -175,7 +175,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 1: Action Plan Full Functionality & Initial Dashboard Score Integration
+
+### Phase 1: Action Plan Full Functionality & Initial Dashboard Score Integration
 
 Rationale: With the HTML and basic JS merged, this phase ensures that the Action Plan, which already has sophisticated interactivity, is fully operational and correctly updates the "Uplift Box." It also verifies that the Dashboard scores are pulling from the pillarScores JavaScript object. This addresses the "Action Plan" feature point.
 
