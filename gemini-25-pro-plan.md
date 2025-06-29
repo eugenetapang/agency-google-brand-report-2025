@@ -12,6 +12,8 @@ So it begins—and ends—with the conversation below. I’ll share the full jou
 
 Enjoy.
 
+#### P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  If you are still reading you are a masochist like me. :->
+
 ### Start of Plan
 
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
