@@ -77,7 +77,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 0.2: JavaScript Data & Initial Global State Integration
+
+### Phase 0.2: JavaScript Data & Initial Global State Integration
 
 Objective: Consolidate all data structures from both index.html and index4.html into a single JavaScript block. Initialize global state variables for all tabs and their sub-components. Implement Local Storage for basic persistence.
 
@@ -170,7 +171,7 @@ Uplift box correctly calculates and displays "Current Score," "Uplift," "Project
 
 Dashboard "Pillar Performance Scores" directly reflect the pillarScores JavaScript object.
 
-Phase 1.1: Action Plan & Dashboard Integration Verification
+### Phase 1.1: Action Plan & Dashboard Integration Verification
 
 Objective: Ensure all merged Action Plan features (CRUD, filtering, sorting, view toggles, evidence, uplift box) function correctly and that dashboard scores are populated from pillarScores.
 
@@ -219,7 +220,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 2: Dynamic Detailed Analysis & Scoring Engine
+
+### Phase 2: Dynamic Detailed Analysis & Scoring Engine
 
 Rationale: This is the most complex and critical phase, transforming the static "Detailed Analysis" tab into a fully interactive system. We will replicate the successful "card" pattern from the Action Plan for individual metrics, enable CRUD and evidence for them, and then connect these live, editable values to drive the dynamic "Performance Scores" on the Dashboard. This addresses the core of the "Detailed Analysis" and "Performance Score" feature points.
 
@@ -251,7 +253,7 @@ An editable section for competitor data (Name, Avg Rating, # Reviews) in the GBP
 
 The GBP Comparison Chart dynamically updates its datasets to reflect both client and competitor data entered via these editable fields.
 
-Phase 2.1: Detailed Analysis UI Conversion to Metric Cards
+### Phase 2.1: Detailed Analysis UI Conversion to Metric Cards
 
 Objective: Rewrite the rendering functions for Detailed Analysis sub-tabs (populateGbpMetrics, populateOrganicMetrics, populateCrawlIndexingMetrics, populateAiGeminiMetrics, populateAiReadiness) to create interactive "Metric Cards" with editable inputs and evidence/delete placeholders. Define the scoringRubric and update data structures.
 
@@ -381,7 +383,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 2.2: Dynamic Scoring Engine Core Logic
+
+### Phase 2.2: Dynamic Scoring Engine Core Logic
 
 Objective: Implement the core logic for calculating pillar scores based on the live, editable metric card data and connect this to the Dashboard and Action Plan Uplift.
 
@@ -455,7 +458,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 2.3: Competitor Benchmarking & Evidence Modal Refinement
+
+### Phase 2.3: Competitor Benchmarking & Evidence Modal Refinement
 
 Objective: Implement the ability to define and edit competitor data in the GBP Analysis, and dynamically update the GBP Comparison Chart. Ensure the evidence modal works seamlessly for both Action Plan tasks and Analysis metrics.
 
@@ -523,7 +527,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 3: Supporting Data & Profile Info Enhancements
+
+### Phase 3: Supporting Data & Profile Info Enhancements
 
 Rationale: These sections are currently static. This phase will implement full CRUD (Create, Read, Update, Delete) functionality for Supporting Data items and Profile Information fields, and introduce a critical security warning regarding credential storage. This addresses "Supporting Data" and "Profile Information" feature points.
 
@@ -547,7 +552,7 @@ All basic information fields (Client Name, Website, Address, etc.) are editable 
 
 Crucial Warning: No sensitive credentials (login/passwords) are stored in Local Storage; an explicit warning is added.
 
-Phase 3.1: Supporting Data Gallery CRUD
+### Phase 3.1: Supporting Data Gallery CRUD
 
 Objective: Make the "Supporting Data" gallery fully interactive with CRUD capabilities.
 
@@ -607,7 +612,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 3.2: Profile Information CRUD (Excluding Credentials)
+
+### Phase 3.2: Profile Information CRUD (Excluding Credentials)
 
 Objective: Make client profile details and marketing goals editable and persistent. Explicitly state that sensitive credentials will NOT be stored.
 
@@ -656,7 +662,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 4: Reports History & Advanced Features
+
+### Phase 4: Reports History & Advanced Features
 
 Rationale: This phase implements the final, higher-level features that bring the "time-based historiograph" aspect to life. It includes comprehensive report saving/loading, trend visualization, and the UI/UX for light/dark mode and report generation options. This addresses "Reports History" and all remaining advanced feature requests.
 
@@ -682,7 +689,7 @@ Light/Dark Mode toggle, ensuring charts and text remain visible and readable in 
 
 "Generate HTML for Email" button to display embeddable HTML string (conceptual).
 
-Phase 4.1: Comprehensive Report Saving, Loading, and Trend Chart
+### Phase 4.1: Comprehensive Report Saving, Loading, and Trend Chart
 
 Objective: Refine saveCurrentReport() to capture all data, ensure loadHistoricalReport() restores it completely, and implement the historical trend chart on the Dashboard.
 
@@ -767,7 +774,8 @@ content_copy
 download
 Use code with caution.
 IGNORE_WHEN_COPYING_END
-Phase 4.2: Light/Dark Mode & Export/Email Buttons
+
+### Phase 4.2: Light/Dark Mode & Export/Email Buttons
 
 Objective: Implement Light/Dark Mode toggle and add placeholder buttons for PDF export and HTML email generation.
 
