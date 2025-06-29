@@ -1,4 +1,11 @@
 # Google AI 2.5 Pro - App Experiment - 6-29-2025
+
+I began this experimental project thinking can I build in modular pieces going from smaller codebase to the large meta codebase concept of the app to see if it was possible.  Sadly, this is a very frustrating direction to take, and you will find as the context memory and LLM comprehension will begin to lag when you are consuming above 100k tokens, I was complaining to the LLM that it was straight out getting dumber and kept apologizing which I find funny since we know this thing isn't sentient, or is it?!!!
+
+Nonetheless, I gave it a huge task to build the entirety of this app with a plan built on 3 documents; plan.txt which was essentially a BRD (Busienss Requirement Document), and 2 index.html web pages that presented a UI with some generalized content, categorical to detail content examples, and a general scoring system, and datapoints in a simple UI built by Gemini Canvas.  So it begins and ends with this conversation below.  The practice of getting to the final product I will share at a later date, to help you precisely set expectations for building apps with Gemini or any other AI Code Builder as matter of subjectivity and a way to size up what it takes to get it done.  Enjoy
+
+### Start of Plan
+
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
 
 Here's a comprehensive phased plan designed to build your Google Performance Reporting Tool step-by-step. Each phase has a clear rationale, desired outcome, and includes a specific, copy-pasteable prompt for a large language model (LLM) like Gemini.
@@ -937,3 +944,5 @@ Error Handling: Ensure basic error handling for file operations, Local Storage, 
 Performance (Minor): For very frequent updates (e.g., typing into an input field triggering calculateAllPillarScores), consider adding a debounce function to prevent excessive recalculations. For now, direct calls are acceptable.
 
 This detailed, phased approach will allow you to build the application incrementally and address complexities with targeted LLM interactions, significantly increasing your chances of success.
+
+### End of Conversation
