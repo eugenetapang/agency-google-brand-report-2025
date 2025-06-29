@@ -14,8 +14,9 @@ Enjoy.
 
 P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  If you are still reading. **"You are a Masochist just like Me. :-> Welcome Friend!**
 
-### Start of Plan
+### Star of the Conversation
 
+## The Plan
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
 
 Here's a comprehensive phased plan designed to build your Google Performance Reporting Tool step-by-step. Each phase has a clear rationale, desired outcome, and includes a specific, copy-pasteable prompt for a large language model (LLM) like Gemini.
