@@ -8,7 +8,7 @@ Nonetheless, I tasked it with building the entirety of the app based on a plan c
 
 * Two index.html web pages that defined a UI with generalized content, category-to-detail examples, a basic scoring system, and some structured datapoints—presented in a simple UI built using Gemini Canvas.
 
-What would appear as a simple app with plain interface carries some really advanced capabilities; two (2) scoring system with (1) Pillar Scoring Rubric algorithm, project management tools, document management, client profiling, and time-based histograph and archive system.  If you are an Analyst or a Numbers person you will appreciate this adventure to building this much needed, in the back of your mind, gnawing at your psyche app that you always wanted to build. lol
+What would appear as a simple app with plain interface carries some really advanced capabilities; two (2) progress score sub-systems with (1) Pillar Scoring Engine using a Rubric algorithm, project management tools, document management, client profiling, and time-based histograph and archive system.  If you are an Analyst or a Numbers person you will appreciate this adventure to building this much needed, in the back of your mind, gnawing at your psyche app that you always wanted to build. lol
 
 So it begins—and ends—with the conversation below. I’ll share the full journey to the final product at a later date, to help you better set expectations when building apps with Gemini or any AI code builder. After all, it’s a matter of subjectivity—and a way to measure what it really takes to get things done.
 
