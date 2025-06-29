@@ -6,7 +6,7 @@ Here's a comprehensive phased plan designed to build your Google Performance Rep
 ## Overall Strategy:
 We will tackle this project incrementally, building upon stable and robust components. The focus will be on achieving core interactivity and data dynamism first, then layering on advanced features like historical reporting and theming. We'll prioritize consistency in user experience patterns (e.g., how cards and modals behave) across different sections of the report.
 
-Design Principles:
+### Design Principles:
 
 Mobile-First Responsive Design: We'll leverage Tailwind CSS to ensure the application adapts seamlessly to various screen sizes.
 
@@ -18,7 +18,7 @@ User Experience (UX) Consistency: Interactive patterns (e.g., card design, modal
 
 Data Persistence: Local Storage will be used for saving application state across sessions. A critical security warning will be issued regarding sensitive data like credentials, as client-side storage is inherently insecure for such information.
 
-Phase 0: Foundation Setup & Core UI Integration
+### Phase 0: Foundation Setup & Core UI Integration
 
 Rationale: Before building new complex dynamic features, we need a stable and comprehensive starting point. This phase consolidates the best HTML structure and all static data definitions from your provided files (index.html for general content, index4.html for advanced Action Plan UI) into a single, cohesive index.html file. It also sets up the basic tab navigation and loads initial data. This addresses the "merge" and "restore missing content" points.
 
@@ -36,7 +36,7 @@ Neue Montreal font is applied.
 
 All existing Action Plan features (CRUD, filter, sort, view toggles, evidence, uplift box) from index4.html should already be working as a baseline.
 
-Phase 0.1: Initial HTML Structure & CSS Integration
+### Phase 0.1: Initial HTML Structure & CSS Integration
 
 Objective: Merge the comprehensive HTML structure (all tabs, sections, and their detailed content) from index.html with the Action Plan's specific UI elements (sort/filter controls, view toggles, and task/evidence modals) from index4.html.
 
