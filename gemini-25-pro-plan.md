@@ -18,7 +18,7 @@ P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Tim
 
 ### Start of the Conversation
 
-## Days Burned So Far to MVP: 3 Days (12 to 24 Hour Coolng Period due to Over-Consumption of Free Plan)
+## Days Burned So Far to MVP: 3 Days (12 to 24 Hour Rest/Work Cycles Due Coolng-off Period, Lunch and due to Over-Consumption of Google's Free Plan, wish it was Unli-Lunch haha.)
 
 ## The Plan
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
