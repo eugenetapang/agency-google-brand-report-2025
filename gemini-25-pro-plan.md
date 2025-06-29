@@ -17,7 +17,8 @@ Enjoy.
 P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  If you are still reading. **"You are a Masochist just like Me. :-> Welcome Friend!**
 
 ### Start of the Conversation
-#### Time Elasped to an MPP Product Demo App:  3 Days, Halted Due to Free Start/Stop Usage Expired, Work in 24 Hour Cycles, Free is Free, Time is the Cost!
+#### Time Burned So Far to an MPP Product Demo App:  3 Days
+#### Time Elapse Comment:  Work is Lifecycle is Dependent on Free Start/Stop Usage, When Expired a cooling off period of 24 Hour is activated, Free is Free, Time is the Cost! Not Fast and Dirty, more Like Chill and Thorough Days!
 
 ## The Plan
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
