@@ -17,8 +17,8 @@ Enjoy.
 P.S. Take this with a grain of salt, The real cost is Time, Lots and Lots of Time-Sunk, If you are concerned about time to results.  This is not the way to go.  Hire someone with a proven system!!!  If you are still reading. **"You are a Masochist just like Me. :-> Welcome Friend!**
 
 ### Start of the Conversation
-#### Time Burned So Far to an MPP Product Demo App:  3 Days
-#### Time Elapse Comment:  Work is Lifecycle is Dependent on Free Start/Stop Usage, When Expired a cooling off period of 24 Hour is activated, Free is Free, Time is the Cost! Not Fast and Dirty, more Like Chill and Thorough Days!
+
+## Days Burned So Far to MVP: 3 Days (12 to 24 Hour Coolng Period due to Over-Consumption of Free Plan)
 
 ## The Plan
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
