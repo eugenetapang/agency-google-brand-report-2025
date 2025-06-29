@@ -1,3 +1,4 @@
+# Google AI 2.5 Pro - App Experiment - 6-29-2025
 This is an ambitious and complex project, and your observations about large LLM prompts leading to "dumber" outputs are spot on. Breaking it down into manageable, sequential phases is exactly the right approach.
 
 Here's a comprehensive phased plan designed to build your Google Performance Reporting Tool step-by-step. Each phase has a clear rationale, desired outcome, and includes a specific, copy-pasteable prompt for a large language model (LLM) like Gemini.
